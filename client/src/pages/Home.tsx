@@ -118,9 +118,13 @@ export default function Home({ dados }: Props) {
 
         {/* Barra de progresso */}
         <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between relative">
+            {/* Linha de fundo */}
+            <div className="absolute top-3.5 left-0 right-0 h-0.5 bg-gray-200 z-0" />
+            {/* Linha preenchida (entre step 0 e 1) */}
+            <div className="absolute top-3.5 left-0 w-1/2 h-0.5 bg-purple-600 z-0" />
             {["Venda confirmada", "Verificação", "Pagamento liberado"].map((step, i) => (
-              <div key={i} className="flex flex-col items-center flex-1">
+              <div key={i} className="flex flex-col items-center flex-1 z-10">
                 <div className={`h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold mb-1 ${
                   i <= 1 ? "bg-purple-600 text-white" : "bg-gray-200 text-gray-400"
                 }`}>
@@ -129,7 +133,6 @@ export default function Home({ dados }: Props) {
                 <span className={`text-xs text-center leading-tight ${i <= 1 ? "text-purple-600 font-medium" : "text-gray-400"}`}>
                   {step}
                 </span>
-                {i < 2 && <div className={`absolute h-0.5 w-24 mt-3.5 ${i === 0 ? "bg-purple-600" : "bg-gray-200"}`} />}
               </div>
             ))}
           </div>
