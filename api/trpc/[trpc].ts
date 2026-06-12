@@ -1,15 +1,12 @@
-import { initTRPC } from "@trpc/server";
-import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import { initTRPC, TRPCError } from "@trpc/server";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { z } from "zod";
-import type { Request, Response } from "express";
 
-const t = initTRPC.create({});
-const router = t.router;
-const publicProcedure = t.procedure;
+const t = initTRPC.create();
 
-const appRouter = router({
-  payment: router({
-    createDeposit: publicProcedure
+const appRouter = t.router({
+  payment: t.router({
+    createDeposit: t.procedure
       .input(z.object({
         amount: z.number().positive(),
         description: z.string(),
@@ -22,7 +19,7 @@ const appRouter = router({
         const apiUrl = process.env.ELITE_PAYBR_API_URL || "https://api.elitepaybr.com";
 
         if (!clientId || !clientSecret) {
-          throw new Error("Elite PAYbr credentials not configured");
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Credenciais não configuradas" });
         }
 
         const response = await fetch(`${apiUrl}/api/v1/deposit`, {
@@ -36,77 +33,66 @@ const appRouter = router({
         });
 
         const rawText = await response.text();
-        console.log("[ElitePAYbr] Status:", response.status);
-        console.log("[ElitePAYbr] Resposta:", rawText);
+        console.log("[ElitePAYbr] Status:", response.status, "Body:", rawText);
 
         let data: any;
         try {
           data = JSON.parse(rawText);
         } catch {
-          throw new Error(`Resposta inválida da gateway: ${rawText}`);
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: `Resposta inválida: ${rawText}` });
         }
 
         if (!response.ok) {
-          throw new Error(`Elite PAYbr error (${response.status}): ${JSON.stringify(data)}`);
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: `Gateway error ${response.status}: ${JSON.stringify(data)}` });
         }
 
         const qrcodeUrl = data.qrcodeUrl ?? data.qrcode_url ?? data.qrCode ?? data.qr_code ?? null;
         const copyPaste = data.copyPaste ?? data.copy_paste ?? data.pixCopiaECola ?? data.pix_code ?? null;
         const transactionId = data.transactionId ?? data.transaction_id ?? data.id ?? null;
 
-        // Corrigir base64
         let qrFinal = qrcodeUrl;
         if (qrFinal && !qrFinal.startsWith("http") && !qrFinal.startsWith("data:")) {
           qrFinal = `data:image/png;base64,${qrFinal.replace(/^base64:/, "")}`;
         }
 
-        return {
-          success: true,
-          transactionId,
-          qrcodeUrl: qrFinal,
-          copyPaste,
-          status: data.status ?? "PENDENTE",
-        };
+        return { success: true, transactionId, qrcodeUrl: qrFinal, copyPaste, status: data.status ?? "PENDENTE" };
       }),
 
-    checkStatus: publicProcedure
+    checkStatus: t.procedure
       .input(z.object({ transactionId: z.string() }))
       .query(async ({ input }) => {
-        const clientId = process.env.ELITE_PAYBR_CLIENT_ID;
-        const clientSecret = process.env.ELITE_PAYBR_CLIENT_SECRET;
+        const clientId = process.env.ELITE_PAYBR_CLIENT_ID!;
+        const clientSecret = process.env.ELITE_PAYBR_CLIENT_SECRET!;
         const apiUrl = process.env.ELITE_PAYBR_API_URL || "https://api.elitepaybr.com";
 
         const response = await fetch(`${apiUrl}/api/transactions/check`, {
           method: "POST",
-          headers: {
-            "x-client-id": clientId!,
-            "x-client-secret": clientSecret!,
-            "Content-Type": "application/json",
-          },
+          headers: { "x-client-id": clientId, "x-client-secret": clientSecret, "Content-Type": "application/json" },
           body: JSON.stringify({ transactionId: input.transactionId }),
         });
-
         return response.json();
       }),
   }),
 
-  auth: router({
-    me: publicProcedure.query(() => null),
-    logout: publicProcedure.mutation(() => ({ success: true })),
+  auth: t.router({
+    me: t.procedure.query(() => null),
+    logout: t.procedure.mutation(() => ({ success: true })),
   }),
 
-  system: router({
-    health: publicProcedure.query(() => ({ ok: true })),
+  system: t.router({
+    health: t.procedure.query(() => ({ ok: true })),
   }),
 });
 
 export type AppRouter = typeof appRouter;
 
-const handler = createExpressMiddleware({
-  router: appRouter,
-  createContext: ({ req, res }: { req: Request; res: Response }) => ({ req, res, user: null }),
-});
-
-export default function (req: any, res: any) {
-  return handler(req, res, () => {});
+export default async function handler(req: Request): Promise<Response> {
+  return fetchRequestHandler({
+    endpoint: "/api/trpc",
+    req,
+    router: appRouter,
+    createContext: () => ({}),
+  });
 }
+
+export const config = { runtime: "edge" };
