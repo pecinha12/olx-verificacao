@@ -101,6 +101,8 @@ const appRouter = router({
   }),
 });
 
+export type AppRouter = typeof appRouter;
+
 const handler = createExpressMiddleware({
   router: appRouter,
   createContext: ({ req, res }: { req: Request; res: Response }) => ({ req, res, user: null }),
