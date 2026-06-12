@@ -1,10 +1,9 @@
 import { initTRPC } from "@trpc/server";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import superjson from "superjson";
 import { z } from "zod";
 import type { Request, Response } from "express";
 
-const t = initTRPC.create({ transformer: superjson });
+const t = initTRPC.create({});
 const router = t.router;
 const publicProcedure = t.procedure;
 
