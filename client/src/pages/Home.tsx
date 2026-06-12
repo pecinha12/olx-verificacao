@@ -14,16 +14,6 @@ type Props = {
   };
 };
 
-const PRODUTOS = [
-  { nome: "iPhone 13 128GB", valor: "R$ 2.200,00", img: "📱" },
-  { nome: "Notebook Dell Inspiron", valor: "R$ 1.800,00", img: "💻" },
-  { nome: "PlayStation 5", valor: "R$ 3.500,00", img: "🎮" },
-  { nome: "Smart TV Samsung 55\"", valor: "R$ 2.100,00", img: "📺" },
-  { nome: "Bicicleta Caloi Aro 29", valor: "R$ 1.200,00", img: "🚲" },
-];
-
-const COMPRADORES = ["Carlos M.", "Ana P.", "Roberto S.", "Fernanda L.", "Marcos T.", "Juliana R."];
-
 export default function Home({ dados }: Props) {
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [copyPaste, setCopyPaste] = useState<string | null>(null);
@@ -35,9 +25,6 @@ export default function Home({ dados }: Props) {
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Produto e comprador aleatórios fixos
-  const produto = useRef(PRODUTOS[Math.floor(Math.random() * PRODUTOS.length)]).current;
-  const comprador = useRef(COMPRADORES[Math.floor(Math.random() * COMPRADORES.length)]).current;
   const protocolo = useRef(`OLX${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 89999)}`).current;
 
   const utils = trpc.useUtils();
@@ -148,24 +135,10 @@ export default function Home({ dados }: Props) {
           </div>
         </div>
 
-        {/* Card da venda */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="text-4xl bg-gray-100 rounded-xl p-3">{produto.img}</div>
-            <div className="flex-1">
-              <p className="text-xs text-gray-500 mb-0.5">Venda realizada</p>
-              <p className="font-semibold text-gray-900">{produto.nome}</p>
-              <p className="text-purple-600 font-bold text-lg">{produto.valor}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-gray-500">Comprador</p>
-              <p className="text-sm font-medium text-gray-700">{comprador}</p>
-            </div>
-          </div>
-          <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
-            <span className="text-xs text-gray-500">Protocolo: <span className="font-mono font-medium text-gray-700">#{protocolo}</span></span>
-            <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-medium">Aguardando liberação</span>
-          </div>
+        {/* Protocolo */}
+        <div className="bg-white rounded-xl border border-gray-200 px-5 py-3 shadow-sm flex justify-between items-center">
+          <span className="text-xs text-gray-500">Protocolo: <span className="font-mono font-medium text-gray-700">#{protocolo}</span></span>
+          <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-medium">Aguardando liberação</span>
         </div>
 
         {/* Timer */}
